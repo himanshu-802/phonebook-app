@@ -16,4 +16,4 @@ Phonebook is a contact saving app that facilitates the saving, editing and delet
 
 https://phonebook-app.000webhostapp.com/
 
-![](Screenshot Images/Screenshot (676).png)
+<img src="images/home.png" height="60%" width="100%">
