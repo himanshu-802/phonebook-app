@@ -6,10 +6,10 @@ Phonebook is a contact saving app that facilitates the saving, editing and delet
 
 
 Our tech stack will include:
-`
+
     Bootstrap and Jquery to be our librray of choice
     MySQL as my database of choice
     PHP as server language
     HTML,CSS, and Javascript with Bootstarp 4 for web app
-`
+
     
