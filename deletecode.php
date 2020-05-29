@@ -1,5 +1,5 @@
 <?php
-$connection = mysqli_connect("localhost","root","","phpcrud");
+$connection = mysqli_connect("localhost","root","","rentomojo");
 
 if(isset($_POST['deletedata']))
 {
@@ -10,7 +10,7 @@ if(isset($_POST['deletedata']))
     echo '<script> alert($fname); </script> ';
 
 
-	$query = " DELETE FROM student WHERE fname='$fname'; ";
+	$query = " DELETE FROM phonebook WHERE fname='$fname'; ";
 	$query_run= mysqli_query($connection, $query);
 
 
@@ -18,6 +18,7 @@ if(isset($_POST['deletedata']))
         	
 		echo '<script> alert("Data Deleted"); </script> ';
 		header('Location:index.php');
+		
 	}
 	else{
 		echo '<script> alert("Data Not Saved"); </script>';
