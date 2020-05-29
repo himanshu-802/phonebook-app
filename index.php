@@ -26,27 +26,34 @@
 				
 						<div class="form-group">
 							<label >Name</label>
-							<input type="text" name="fname" class="form-control" placeholder="Enter Name"> 
+							<input type="text" name="fname" class="form-control" placeholder="Enter Name" required=""> 
 						</div>
-                        <div class="form-group">
-							<label >lname</label>
-							<input type="text" name="lname" class="form-control" placeholder="Enter D.O.B"> 
-						</div>
+
+                        <div class="form-group ">
+                             <label >Date</label>
+                             <input class="form-control" name ="dob" type="date" value="2011-08-19" >               
+                        </div>
 
 					    <div class="form-group">
 							<label >Contact Number 1</label>
-							<input type="text" name="course" class="form-control" placeholder="Enter Contact 1"> 
+							<input type="text" name="contact1" class="form-control" placeholder="Enter Contact 1" required=""> 
 						</div>
 
 						<div class="form-group">
 							<label >Contact Number 2</label>
-							<input type="text" name="contact" class="form-control" placeholder="Enter Contact 2">
+							<input type="text" name="contact2" class="form-control" placeholder="Enter Contact 2">
 						</div>
+						<div class="form-group">
+							<label >Email</label>
+							<input type="email" name="email" class="form-control" placeholder="Enter Email-Id">
+						</div>
+						
+
 		
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="submit" name="insertdata" class="btn btn-primary">Save Data</button>
+					<button type="submit" name="insertdata" class="btn btn-primary">Save Contact</button>
 				</div>
 			</form>
 
@@ -65,31 +72,39 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Edit Student Data</h5>
+					<h5 class="modal-title" id="exampleModalLabel">Edit Contact Data</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<form action="updatecode.php" method="POST">
 				<div class="modal-body">
-				
+
+
+	
+
 						<div class="form-group">
 							<label >Name</label>
-							<input type="text" name="fname" id="fname" class="form-control" placeholder="Enter Name"> 
+							<input type="text" name="fname" id="fname" class="form-control" placeholder="Enter Name" required=""> 
 						</div>
-                        <div class="form-group">
-							<label >lname</label>
-							<input type="text" name="lname" id="lname" class="form-control" placeholder="Enter D.O.B"> 
-						</div>
+                        <div class="form-group ">
+                             <label >Date</label>
+                             <input class="form-control" name="dob" type="date" id="dob" value="2011-08-19" >
+                        
+                        </div>
 
 					    <div class="form-group">
 							<label >Contact Number 1</label>
-							<input type="text" name="course" id="course" class="form-control" placeholder="Enter Contact 1"> 
+							<input type="text" name="contact1" class="form-control" id="contact1" placeholder="Enter Contact 1" required=""> 
 						</div>
 
 						<div class="form-group">
 							<label >Contact Number 2</label>
-							<input type="text" name="contact" id="contact" class="form-control" placeholder="Enter Contact 2">
+							<input type="text" name="contact2" class="form-control" id="contact2" placeholder="Enter Contact 2">
+						</div>
+						<div class="form-group">
+							<label >Email</label>
+							<input type="email" name="email" class="form-control" id="email" placeholder="Enter Email-Id">
 						</div>
 		
 				</div>
@@ -110,7 +125,7 @@
 
 <!-- ####################################################################### -->
 
-	<!-- EDIT FORM (Bootstarp MODAL) -->
+	<!-- DELETE FORM (Bootstarp MODAL) -->
 	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -173,18 +188,18 @@
                      
                     <?php
 
-                         $connection = mysqli_connect("localhost","root","","phpcrud");
-                         $query ="SELECT * FROM student ORDER BY fname";
+                         $connection = mysqli_connect("localhost","root","","rentomojo");
+                         $query ="SELECT * FROM phonebook ORDER BY fname";
                          $query_run= mysqli_query($connection,$query);
-
-
                      ?>
 					<table id ="datatableid" class="table table-bordered table-dark">
 						<thead>
 							<tr> 
-								<th scope="col">First</th>
-								<th scope="col">Last</th>
-								<th scope="col">Course</th>
+								<th scope="col">Name</th>
+								<th scope="col">D.O.B</th>
+								<th scope="col">Contact 1</th>
+								<th scope="col">Contact 2</th>
+								<th scope="col">E-Mail</th>
 								<th scope="col">Edit</th>
 								<th scope="col">Delete</th>
 							</tr>
@@ -199,8 +214,10 @@
 							<tr>
 								
 								<td><?php echo $body['fname']; ?></td>
-								<td><?php echo $body['lname']; ?></td>
-								<td><?php echo $body['course']; ?></td>
+								<td><?php echo $body['dob']; ?></td>
+								<td><?php echo $body['contact1']; ?></td>
+								<td><?php echo $body['contact2']; ?></td>
+								<td><?php echo $body['email']; ?></td>
 								<td>
 									<button class="btn btn-success editBtn">EDIT</button>
 								</td>
@@ -236,10 +253,7 @@
     <script >
     	
     	$(document).ready(function() {
-          var table = $('#datatableid').DataTable();
- 
-
-
+               $('#datatableid').DataTable();
         } );
 
     </script>
@@ -281,10 +295,13 @@
 
     			console.log(data);
 
-    			$('#fname').val(data[0]);
-    			$('#lname').val(data[1]);
-    			$('#course').val(data[2]); 
+    			
 
+    			$('#fname').val(data[0]);
+    			$('#dob').val(data[1]);
+    			$('#contact1').val(data[2]); 
+    			$('#contact2').val(data[3]);
+    			$('#email').val(data[4]);
     		});
     	});
 
