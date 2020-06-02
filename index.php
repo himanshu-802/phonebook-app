@@ -1,10 +1,78 @@
+<?php
+ 
+                    require_once("perpage.php");	
+                    require_once("dbcontroller.php");
+                    $db_handle = new DBController();
+
+                    $fname = "";
+                    $contact1 = "";
+                   
+                    $queryCondition = "";
+                    if(!empty($_POST["search"])) {
+                 
+                    	foreach($_POST["search"] as $k=>$v){
+                    		// echo "$k = $v<br>";
+                    		if(!empty($v)) {
+
+
+                    			$queryCases = array("fname","contact1");
+                    			if(in_array($k,$queryCases)) {
+                    				if(!empty($queryCondition)) {
+                    					$queryCondition .= " AND ";
+                    				} else {
+                    					$queryCondition .= " WHERE ";
+                    				}
+                    			}
+                    			switch($k) {
+                    				case "fname":
+                    				$fname = $v;
+                    				$queryCondition .= "fname LIKE '" . $v . "%'";
+                    				break;
+                    				case "contact1":
+                    				$contact1 = $v;
+                    				$queryCondition .= "contact1 LIKE '" . $v . "%'";
+                    				break;
+                    			}
+                    		}
+                    	}
+                    }
+                    $orderby = " ORDER BY fname "; 
+                    $sql = "SELECT * FROM phonebook " . $queryCondition;
+                    $href = 'index.php';					
+
+                    $perPage = 4; 
+                    $page = 1;
+                    if(isset($_POST['page'])){
+                    	$page = $_POST['page'];
+                    }
+                    $start = ($page-1)*$perPage;
+                    if($start < 0) $start = 0;
+
+                    $query =  $sql . $orderby .  " limit " . $start . "," . $perPage; 
+                    $result = $db_handle->runQuery($query);
+
+                    if(!empty($result)) {
+                    	$result["perpage"] = showperpage($sql, $perPage, $href);
+
+                    }
+
+                    ?>
+					
+
+
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Phone Book Web app</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 	<link rel="stylesheet"  href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
-	
+	<!-- <link rel="stylesheet" type="text/css" href="style.css">
+	 -->
+	 <style type="text/css">
+	 	#search-box{
+	 		margin-left: 20px;
+	 	}
+	 </style>
 </head>
 <body>
 
@@ -168,6 +236,10 @@
 
 
 <!-- ############################################################################# -->
+
+
+
+<!-- ####################################################################################### -->
 	<div class="container">
 		<div class="jumbotron">
 			<div class="card">
@@ -182,17 +254,17 @@
 			</div>
 
 			<div class="card">
-				<div class="card-body">
-
-				                         		
-                     
-                    <?php
-
-                         $connection = mysqli_connect("localhost","root","","rentomojo");
-                         $query ="SELECT * FROM phonebook ORDER BY fname";
-                         $query_run= mysqli_query($connection,$query);
-                     ?>
-					<table id ="datatableid" class="table table-bordered table-dark">
+				<form name="frmSearch" method="post" action="index.php"> 
+				<div class="search-box" >
+				<p>
+					<input type="text" placeholder="Name" name="search[fname]" class="demoInputBox" value="<?php echo $fname; ?>"	/>
+					<input type="text" placeholder="Code" name="search[contact1]" class="demoInputBox" value="<?php echo $contact1; ?>"	/>
+					<input type="submit" name="go" class="btnSearch" value="Search">
+					<input type="reset" class="btnSearch" value="Reset" onclick="window.location='index.php'"></p>
+				</div>
+                </form>
+				<div class="card-body">                    
+                   <table id ="datatableid" class="table table-bordered table-dark">
 						<thead>
 							<tr> 
 								<th scope="col">Name</th>
@@ -204,40 +276,48 @@
 								<th scope="col">Delete</th>
 							</tr>
 						</thead>
-						 <?php
-                         if($query_run)
-                         {
-                         	foreach ($query_run as $body) {
-                         ?>
+						 
                     
 						<tbody>
-							<tr>
-								
-								<td><?php echo $body['fname']; ?></td>
-								<td><?php echo $body['dob']; ?></td>
-								<td><?php echo $body['contact1']; ?></td>
-								<td><?php echo $body['contact2']; ?></td>
-								<td><?php echo $body['email']; ?></td>
-								<td>
-									<button class="btn btn-success editBtn">EDIT</button>
-								</td>
-								<td>
-									<button class="btn btn-danger deleteBtn">DELETE</button>
-								</td>
-							</tr>
 
-						</tbody>
 						<?php
-                         	}
-                         }
-                         else{
-                         	echo "No record found";
-                         }
-
-					     ?>
-                    </table>
+						if(!empty($result)) {
+							foreach($result as $k=>$v) {
+								if(is_numeric($k)) {
+									?>
+									<tr>
+										<td><?php echo $result[$k]["fname"]; ?></td>
+										<td><?php echo $result[$k]["dob"]; ?></td>
+										<td><?php echo $result[$k]["contact1"]; ?></td>
+										<td><?php echo $result[$k]["contact2"]; ?></td>
+										<td><?php echo $result[$k]["email"]; ?></td> 
+										<td>
+											<button class="btn btn-success editBtn">EDIT</button>
+										</td>
+										<td>
+											<button class="btn btn-danger deleteBtn">DELETE</button>
+										</td>
+									</tr>
+									<?php
+								}
+							}
+						}
+                        
+						if(isset($result["perpage"])) {
+							?>
+								<form name="frmSearch" method="post" action="index.php"> 
+							<tr>
+								<td colspan="7" align=center> <?php echo $result["perpage"]; ?></td>
+							</tr>
+						</form>
+						<?php } ?>
+					
+					
+                    </tbody>
+ -                 </table>
 					
 				</div>
+			
 			</div>
 		</div>
 	</div>
@@ -249,14 +329,6 @@
 	<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
     
-
-    <script >
-    	
-    	$(document).ready(function() {
-               $('#datatableid').DataTable();
-        } );
-
-    </script>
 
 
     <script >
